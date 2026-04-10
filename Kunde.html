@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ACP DemoCRM</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 5px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+	
+	.myhead {
+	  border: 1px solid #3D4A52;
+	  background: #3D4A52;
+	  color: #fff;
+	  border-radius: 4px;
+	}
+
+    h1 {
+      color: #fff;
+	  font-size: 22px;
+    }
+	
+	h2 {
+      color: #3D4A52;
+	  font-size: 14px;
+	  font-weight: bold;
+	  background-color: #AAC936;
+	  padding: 3px;
+	  padding-left: 10px;
+	  border-radius: 4px;
+    }
+
+    .form-group {
+      margin-bottom: 5px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+	  font-size: 16px;
+      margin-bottom: 5px;
+	  display: inline-block;
+    }
+
+    .readonly-field {
+      background-color: #f2f2f2;
+      padding: 6px;
+      border: none;
+      border-radius: 4px;
+      color: #333;
+      width: 90%;
+    }
+
+    .readonly-field_bold {
+      background-color: #f2f2f2;
+      padding: 6px;
+      border: none;
+      border-radius: 4px;
+      color: #b00e2c;
+      font-weight: bold;
+      width: 90%;
+    }
+
+    .sub-section {
+      margin-top: 20px;
+    }
+
+    .sub-section h2 {
+      /*color: #3D4A52;*/
+      margin-bottom: 10px;
+    }
+
+    .contact-persons-table {
+      width: 90%;
+      border-collapse: collapse;
+	  margin-left: 40px;
+    }
+
+    .contact-persons-table th{
+      padding: 8px;
+	  text-align: left;
+      border-bottom: 1px solid #ddd;
+	  font-size: 14px;
+	  background-color: #f2f2f2;
+    }
+	
+    .contact-persons-table td {
+      padding: 8px;
+	  text-align: left;
+      border-bottom: 1px solid #ddd;
+	  font-size: 14px;
+    }
+
+    button {
+      background-color: #3D4A52;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+	  width: 150px;
+    }
+
+    button:hover {
+      background-color: #AAC936;
+	  color: #3D4A52;
+	  font-weight: bold;
+    }
+
+    .column {
+      width: 50%;
+      float: left;
+      box-sizing: border-box;
+      padding-right: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .column {
+        width: 100%;
+        padding-right: 0;
+      }
+    }
+  </style>
+  <script>
+    // Holt den gesamten Querystring der URL (param1=hallo&param2=echo)
+    const queryString = window.location.search;
+    
+    // Extrahiert aus dem Querystring einzelne Parameter
+    const urlParams = new URLSearchParams(queryString);
+      
+    // Liest mit .get() die Werte der Parameter aus
+    const sAnrufer = urlParams.get('sAnrufer').replace("+", "%2B");
+    
+    //sAnrufer=sAnrufer.replace("+", "%2B");
+
+    var DBconURL = 'https://webexdb.swsnet.de/rest/webexcc/a395418d-20c8-4b1b-b3a4-65081aeb359d?sAnrufer='+sAnrufer;
+
+    var myHeaders = new Headers();
+    myHeaders.append("Cookie", "JSESSIONID=30B05B948B696117347EA0E8774E0865");
+    //myHeaders.append("Access-Control-Allow-Origin", "http://is-passau.de");
+
+    var requestOptions = {
+      method: 'GET',
+      /*mode: "no-cors",*/
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    
+    /*
+    fetch(DBconURL, requestOptions)
+      .then(result => {
+        //alert(result);
+        //document.getElementById("content").innerHTML = 'result: '+result;        
+        document.getElementById("sanrufer").value = sAnrufer.replace("%2B", "+");
+        alert('yeah');
+                
+        alert(response.json());
+        console.log(response.json());
+        
+      })
+      .catch(error => {
+        document.getElementById("sanrufer").value = sAnrufer.replace("%2B", "+");
+        alert('error', error);        
+      });    
+    */
+    /*
+    const response = fetch(DBconURL, requestOptions);
+    const jsonData = response.json();
+    alert(jsonData);
+    */
+    async function AskDBcon() 
+    {
+      try
+      {
+          const response = await fetch(DBconURL, requestOptions);
+          const jsonData = await response.json();
+          console.log(jsonData);
+
+          document.getElementById("mylasttime").value = jsonData.mylasttime;
+          document.getElementById("mylastagent").value = jsonData.sagentemail;
+      }
+      catch(error)
+      {
+
+      }
+      document.getElementById("sanrufer").value = sAnrufer.replace("%2B", "+");
+    }
+    AskDBcon();    
+    
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+	  <table class=myhead width="100%"><tr><td width=120><img src='https://wxcc1.demos.efa.ai/images/ACP_logo.png' border=0 width=50></td><td align=left><h1>Demo-Maske</h1></td></tr></table>
+    </div>
+    <div class="upper-section">
+      <div class="column">
+        <form>
+          <div class="form-group">
+            <table border=0 width="100%"><tr><td width=150><label for="company">Firmenname</label></td><td><input type="text" id="company" name="company" class="readonly-field" value="Beispiel GmbH"></td></tr></table>
+          </div>
+          <div class="form-group">
+            <table border=0 width="100%"><tr><td width=150><label for="company">Adresse</label></td><td><input type="text" id="company" name="company" class="readonly-field" value="Musterstrasse 123"></td></tr></table>			
+          </div>
+          <div class="form-group">
+            <table border=0 width="100%"><tr><td width=150><label for="company">Kundennummer</label></td><td><input type="text" id="company" name="company" class="readonly-field" value="12345"></td></tr></table>
+          </div>
+          <hr>
+          <div class="form-group">
+            <table border=0 width="100%"><tr><td width=150><label for="company">Letzter Anruf am</label></td><td><input type="text" id="mylasttime" name="mylasttime" class="readonly-field" value="28. Mai 2023, 10:30 Uhr"></td></tr></table>
+          </div>
+        </form>
+      </div>
+      <div class="column">
+        <form>
+          <div class="form-group">		  
+            <table border=0 width="100%"><tr><td width=150><label for="company">Telefonnummer</label></td><td><input type="text" id="sanrufer" name="sanrufer" class="readonly-field" value="+49123456789"></td></tr></table>
+          </div>
+          <div class="form-group">
+            <table border=0 width="100%"><tr><td width=150><label for="company">E-Mail</label></td><td><input type="text" id="company" name="company" class="readonly-field" value="info@beispielgmbh.com"></td></tr></table>
+          </div>
+          <div class="form-group">
+            <table border=0 width="100%"><tr><td width=150><label for="company"><font color=#b00e2c>Verifizierungs PIN</font></label></td><td><input type="text" id="company" name="company" class="readonly-field_bold" value="2649"></td></tr></table>
+          </div>
+          <hr>
+          <div class="form-group">
+            <table border=0 width="100%"><tr><td width=150><label for="company">Gesprochen mit</label></td><td><input type="text" id="mylastagent" name="mylastagent" class="readonly-field" value="Agent Lukas"></td></tr></table>
+          </div>
+        </form>
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+    <div class="sub-section">
+      <h2>Ansprechpartner</h2>
+      <table class="contact-persons-table">
+        <thead>
+          <tr>
+            <th width=240>Name</th>
+            <th width=240>Telefonnummer</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Max Mustermann</td>
+            <td>+49 123 456789</td>
+            <td>max.mustermann@beispielgmbh.com</td>
+          </tr>
+          <tr>
+            <td>Anna Musterfrau</td>
+            <td>+49 987 654321</td>
+            <td>anna.musterfrau@beispielgmbh.com</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>	
+    <div class="sub-section">
+      <h2>Vertragspositionen</h2>
+      <table class="contact-persons-table">
+        <thead>
+          <tr>
+            <th width=240>Name</th> 
+            <th width=240>Abgeschlossen am</th>
+            <th>Endet am</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vertragsposition 1</td>
+            <td>01. Januar 2023</td>
+            <td>31. Dezember 2023</td>
+          </tr>
+          <tr>
+            <td>Vertragsposition 2</td>
+            <td>01. Februar 2023</td>
+            <td>31. Januar 2024</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+	<br><br><hr>
+    <div class="footer">
+      <button type="submit" disabled>Speichern</button> <button type="submit" disabled>Vertr&auml;ge</button> <button type="submit" disabled>Kontakte</button> <button type="submit" disabled>Ticketing</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</body>
+</html>

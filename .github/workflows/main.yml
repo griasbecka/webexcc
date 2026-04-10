@@ -1,0 +1,48 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Azure Container Registry Build
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: FranzDiebold/github-env-vars-action@v2     
+      - name: ACR build
+        id: acr
+        uses: ams0/acr-task-github-action@v2
+        with:
+          service_principal: 79dd1c6e-1929-43fc-9c26-5f8bc6632448
+          service_principal_password: S.Zh2JfR1nAjPthY~y~4_B-8Kf4d4SSxtt
+          tenant: 6c1397e0-ad44-45c1-861c-254dc57cd46c
+          registry: swshub
+          repository: ${{ env.CI_REPOSITORY_NAME }}
+          tag: ${{ env.CI_ACTION_REF_NAME }}
+          branch: ${{ env.CI_ACTION_REF_NAME }}
+          git_access_token: ${{ github.token }}
+          folder: .
+          dockerfile: ./Dockerfile
+
+  notify:
+    needs: build
+
+    runs-on: ubuntu-latest
+    
+    steps: 
+      - uses: FranzDiebold/github-env-vars-action@v2  
+      - name: Send message to ms teams
+        uses: dhollerbach/github-action-send-message-to-ms-teams@1.0.10
+        with:
+          webhook: 'https://acpcloud.webhook.office.com/webhookb2/39fad352-5a9f-45b5-a7a9-66451d933240@48837bc4-76f9-481d-8a76-bd7b60b43dec/IncomingWebhook/ff2cd3776a5641fdb8d7203ad5aebf51/4b2a0c54-f11d-4f86-bf6e-179b9e1a5d8e'
+          message: 'Successfully built image: ${{ env.CI_REPOSITORY_NAME }}:${{ env.CI_ACTION_REF_NAME }}'
+
